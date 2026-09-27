@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="hy">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Տիգրան & Անի | Հարսանեկան Հրավիրատոմս</title>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Noto+Sans+Armenian:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: 'SHK Dzeragir';
+      src: local('SHK Dzeragir'), local('SHKDzeragir'),
+           url('https://fonts.cdnfonts.com/s/72922/SHKDzeragir.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #ffffff;
+      color: #555555;
+      font-family: 'Noto Sans Armenian', sans-serif;
+      text-align: center;
+    }
+
+    /* Երաժշտության Play/Pause Կոճակ */
+    .music-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid #ff6b81;
+      color: #ff6b81;
+      border-radius: 50px;
+      padding: 10px 18px;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+
+    .music-toggle:hover {
+      background: #ff6b81;
+      color: #ffffff;
+    }
+
+    /* 1. Hero Section */
+    .hero {
+      background: url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+      height: 80vh;
+      position: relative;
+    }
+
+    .hero-overlay {
+      background: rgba(0, 0, 0, 0.35);
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .main-title {
+      font-family: 'SHK Dzeragir', 'Caveat', cursive;
+      color: #ffffff;
+      font-size: 4rem;
+      line-height: 1.1;
+    }
+
+    /* General Layout */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px 15px;
+    }
+
+    .section {
+      padding: 50px 0;
+      border-bottom: 1px solid #f2f2f2;
+    }
+
+    /* Watermark Title Effect */
+    .watermark-title {
+      position: relative;
+      font-family: 'SHK Dzeragir', 'Caveat', cursive;
+      font-size: 2.2rem;
+      color: #4a4a4a;
+      margin-bottom: 30px;
+      display: inline-block;
+      line-height: 1.2;
+    }
+
+    .watermark-title::before {
+      content: attr(data-text);
+      position: absolute;
+      top: -10px;
+      left: 0;
+      right: 0;
+      color: #ededed;
+      z-index: -1;
+      font-size: 2.2rem;
+      white-space: nowrap;
+      opacity: 0.8;
+    }
+
+    .invitation-text {
+      font-size: 0.95rem;
+      color: #666666;
+      line-height: 1.8;
+      max-width: 750px;
+      margin: 0 auto;
+    }
+
+    /* 3. Calendar Section */
+    .calendar-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+
+    .calendar-image img {
+      width: 320px;
+      height: 320px;
+      object-fit: cover;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    .calendar-content {
+      max-width: 380px;
+    }
+
+    .month-name {
+      font-family: 'SHK Dzeragir', 'Caveat', cursive;
+      font-size: 1.8rem;
+      color: #777777;
+      margin-bottom: 10px;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      font-size: 13px;
+      color: #555;
+    }
+
+    .calendar-grid span {
+      padding: 6px 0;
+    }
+
+    .heart-date {
+      background-color: #ff6b81;
+      color: #ffffff !important;
+      border-radius: 50%;
+      font-weight: bold;
+    }
+
+    /* 4. Countdown Timer */
+    .countdown {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 15px;
+    }
+
+    .time-block {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .time-block .num {
+      font-family: 'SHK Dzeragir', 'Caveat', cursive;
+      font-size: 3.2rem;
+      color: #4a4a4a;
+      line-height: 1;
+    }
+
+    .time-block .label {
+      font-family: 'SHK Dzeragir', 'Caveat', cursive;
+      font-size: 1.6rem;
+      color: #ff6b81;
+    }
+
+    .dots {
+      font-family: 'SHK Dzeragir', 'Caveat', cursive;
+      font-size: 2.5rem;
+      color: #777;
+    }
+
+    /* 5. Timeline */
+    .timeline-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .timeline-item .icon {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .timeline-item .time {
+      font-family: 'SHK Dzeragir', 'Caveat', cursive;
+      font-size: 2rem;
+      color: #4a4a4a;
+    }
+
+    .timeline-item .event-title {
+      font-family: 'SHK Dzeragir', 'Caveat', cursive;
+      font-size: 1.5rem;
+      color: #ff6b81;
+    }
+
+    .timeline-item .address {
+      font-family: 'SHK Dzeragir', 'Caveat', cursive;
+      font-size: 1.2rem;
+      color: #777777;
+    }
+
+    /* 6. Maps */
+    .map-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+    }
+
+    .map-title {
+      font-family: 'SHK Dzeragir', 'Caveat', cursive;
+      font-size: 1.7rem;
+      color: #ff6b81;
+      margin-bottom: 10px;
+    }
+
+    .iframe-container {
+      border: 1px solid #ffc1cb;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .iframe-container iframe {
+      width: 100%;
+      height: 230px;
+      border: 0;
+    }
+
+    .map-link-btn {
+      display: inline-block;
+      margin-top: 12px;
+      font-size: 14px;
+      color: #ffffff;
+      background-color: #ff6b81;
+      text-decoration: none;
+      padding: 8px 18px;
+      border-radius: 20px;
+      transition: all 0.3s ease;
+      box-shadow: 0 3px 8px rgba(255, 107, 129, 0.3);
+    }
+
+    .map-link-btn:hover {
+      background-color: #e05267;
+    }
+
+    /* 7. Footer Section */
+    .footer-section {
+      border-bottom: none;
+    }
+
+    .footer-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+
+    .footer-image img {
+      width: 300px;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    .footer-text-box {
+      max-width: 450px;
+    }
+
+    .footer-subtext {
+      font-family: 'SHK Dzeragir', 'Caveat', cursive;
+      font-size: 1.5rem;
+      color: #777;
+      margin-top: 10px;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .timeline-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+      }
+      .map-grid {
+        grid-template-columns: 1fr;
+      }
+      .main-title {
+        font-size: 3rem;
+      }
+      .watermark-title, .watermark-title::before {
+        font-size: 1.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <audio id="bg-music" loop preload="auto" src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=river-flows-in-you-piano-112229.mp3"></audio>
+  <button id="music-btn" class="music-toggle" onclick="toggleMusic()">🎵 Play</button>
+
+  <header class="hero">
+    <div class="hero-overlay">
+      <h1 class="main-title">Տիգրան <br> & <br> Անի</h1>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <section class="section text-section">
+      <div class="watermark-title" data-text="Սիրելի Ընկերներ և Բարեկամներ">
+        Սիրելի Ընկերներ և Բարեկամներ
+      </div>
+      <p class="invitation-text">
+        Սիրով և մեծ ուրախությամբ հրավիրում ենք Ձեզ լինել մեր կյանքի ամենահիշարժան և լուսավոր օրվա մասնակիցը: 
+        Մենք երջանիկ ենք տեղեկացնելու, որ որոշել ենք մեր ճանապարհները միավորել և սկսել կյանքի նոր փուլ՝ ձեռք ձեռքի տված: 
+        Այդ օրը լի կլինի ջերմ զգացմունքներով, անկեղծ ժպիտներով ու գեղեցիկ պահերով, որոնք կցանկանայինք կիսել Ձեզ հետ: 
+        Ձեր ներկայությունը մեզ համար անչափ կարևոր է և կդարձնի մեր հարսանիքի օրն առավել ամբողջական ու հիշարժան:
+      </p>
+    </section>
+
+    <section class="section calendar-section">
+      <div class="calendar-wrapper">
+        <div class="calendar-image">
+          <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=600&q=80" alt="Hands">
+        </div>
+        <div class="calendar-content">
+          <div class="watermark-title" data-text="Պահպանիր Օրը">Պահպանիր Օրը</div>
+          <div class="month-name">Նոյեմբեր 2026</div>
+          <div class="calendar-grid">
+            <span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span>
+            <span></span><span></span><span></span><span></span><span></span><span></span><span>1</span>
+            <span>2</span><span>3</span><span>4</span><span>5</span><span>6</span>
+            <span class="heart-date">7</span>
+            <span>8</span>
+            <span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span>
+            <span>16</span><span>17</span><span>18</span><span>19</span><span>20</span><span>21</span><span>22</span>
+            <span>23</span><span>24</span><span>25</span><span>26</span><span>27</span><span>28</span><span>29</span>
+            <span>30</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="watermark-title" data-text="Մեր Կյանքի Կարևոր Օրը` Ձեր Ներկայությամբ">
+        Մեր Կյանքի Կարևոր Օրը` Ձեր Ներկայությամբ
+      </div>
+      <div class="countdown">
+        <div class="time-block"><span id="days" class="num">00</span><span class="label">Օր</span></div>
+        <span class="dots">:</span>
+        <div class="time-block"><span id="hours" class="num">00</span><span class="label">Ժամ</span></div>
+        <span class="dots">:</span>
+        <div class="time-block"><span id="minutes" class="num">00</span><span class="label">Րոպե</span></div>
+        <span class="dots">:</span>
+        <div class="time-block"><span id="seconds" class="num">00</span><span class="label">Վայրկյան</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="watermark-title" data-text="Ժամանակացույց">Ժամանակացույց</div>
+      <div class="timeline-grid">
+        <div class="timeline-item">
+          <div class="icon">🤵</div>
+          <div class="time">11:00</div>
+          <div class="event-title">Փեսայի տուն</div>
+          <div class="address">ք. Վանաձոր, Չուխաջյան 30</div>
+        </div>
+        <div class="timeline-item">
+          <div class="icon">👰</div>
+          <div class="time">12:00</div>
+          <div class="event-title">Հարսի տուն</div>
+          <div class="address">գ. Դարպաս, 1-ին փոխ., տուն 15</div>
+        </div>
+        <div class="timeline-item">
+          <div class="icon">💍</div>
+          <div class="time">14:00</div>
+          <div class="event-title">Պսակադրություն</div>
+          <div class="address">Սուրբ Գրիգոր Նարեկացի եկեղեցի</div>
+        </div>
+        <div class="timeline-item">
+          <div class="icon">🍽️</div>
+          <div class="time">17:00</div>
+          <div class="event-title highlight">Հարսանյաց Հանդիսություն</div>
+          <div class="address">«Milagro» հանդիսությունների սրահ</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="watermark-title" data-text="Տեղակայում">Տեղակայում</div>
+      <div class="map-grid">
+        
+        <div class="map-box">
+          <div class="map-title">Սուրբ Գրիգոր Նարեկացի եկեղեցի</div>
+          <div class="iframe-container">
+            <iframe 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3027.697486776101!2d44.4925!3d40.8078!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4041b9e28f3bb2ab%3A0xb35a09f30206bdf5!2sSt.%20Gregory%20of%20Narek%20Cathedral!5e0!3m2!1sen!2s!4v1700000000000" 
+              allowfullscreen="" 
+              loading="lazy" 
+              referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+          </div>
+          <a href="https://maps.google.com/?q=St.+Gregory+of+Narek+Cathedral,+Vanadzor" target="_blank" class="map-link-btn">📍 Բացել Քարտեզով</a>
+        </div>
+
+        <div class="map-box">
+          <div class="map-title">«Milagro» հանդիսությունների սրահ</div>
+          <div class="iframe-container">
+            <iframe 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3027.500000000000!2d44.4833!3d40.8100!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4041b9e000000001%3A0x0!2sMilagro+Restaurant+Vanadzor!5e0!3m2!1sen!2s!4v1700000000000" 
+              allowfullscreen="" 
+              loading="lazy" 
+              referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+          </div>
+          <a href="https://maps.google.com/?q=Milagro+Vanadzor" target="_blank" class="map-link-btn">📍 Բացել Քարտեզով</a>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="section footer-section">
+      <div class="footer-wrapper">
+        <div class="footer-image">
+          <img src="https://i.pinimg.com/originals/83/c6/7d/83c67d6f4c817478f259921ef68f20c9.jpg?nii=t" alt="Wedding Couple">
+        </div>
+        <div class="footer-text-box">
+          <div class="watermark-title" data-text="Խնդրում ենք Նախապես Տեղեկացնել Ձեր Մասնակցության Մասին">
+            Խնդրում ենք Նախապես Տեղեկացնել Ձեր Մասնակցության Մասին
+          </div>
+          <p class="footer-subtext">Սիրով կսպասենք Ձեզ մեր տոնական օրը:</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // Cross-browser հետհաշվարկ (Նոյեմբեր 7, 2026, 11:00:00)
+    const targetDate = new Date(Date.UTC(2026, 10, 7, 7, 0, 0)).getTime();
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const diff = targetDate - now;
+
+      if (diff > 0) {
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        document.getElementById("days").innerText = days < 10 ? "0" + days : days;
+        document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
+        document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
+        document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
+      } else {
+        document.getElementById("days").innerText = "00";
+        document.getElementById("hours").innerText = "00";
+        document.getElementById("minutes").innerText = "00";
+        document.getElementById("seconds").innerText = "00";
+      }
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    // Ֆոնային երաժշտության նվագարկում
+    function toggleMusic() {
+      const audio = document.getElementById("bg-music");
+      const btn = document.getElementById("music-btn");
+
+      if (audio.paused) {
+        audio.play().then(() => {
+          btn.innerText = "⏸ Pause";
+        }).catch(err => {
+          console.log("Audio play blocked/failed:", err);
+        });
+      } else {
+        audio.pause();
+        btn.innerText = "🎵 Play";
+      }
+    }
+  </script>
+</body>
+</html>
